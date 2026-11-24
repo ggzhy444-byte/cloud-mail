@@ -1,0 +1,47 @@
+name = "cloud-mail"
+main = "mail-worker/src/index.js"
+compatibility_date = "2025-06-04"
+keep_vars = true
+
+[observability]
+enabled = true
+
+[[d1_databases]]
+binding = "db"
+database_name = "cloud-mail"
+database_id = "01f4a31e-846f-4206-9077-33bc13f4c239"
+
+[[kv_namespaces]]
+binding = "kv"
+id = "bd7e6959fd9e4d1b9b453e4724c2fa80"
+
+[[send_email]]
+name = "forward"
+
+[ai]
+binding = "ai"
+
+[assets]
+binding = "assets"
+directory = "./mail-worker/dist"
+not_found_handling = "single-page-application"
+run_worker_first = [ "/api/*", "/oss/*", "/static/*", "/attachments/*", "/proxy", "/realtime" ]
+
+[triggers]
+crons = ["0 * * * *"]
+
+[[durable_objects.bindings]]
+name = "ws"
+class_name = "MailHub"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["MailHub"]
+
+[vars]
+domain = ["jiusuzulin.com"]
+admin = "admin@jiusuzulin.com"
+jwt_secret = "cm2026-jiusuzulin-secret-8f3k9z"
+
+[build]
+command = "cd mail-vue && pnpm install && pnpm run build"
